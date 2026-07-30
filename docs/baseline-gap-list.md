@@ -39,3 +39,24 @@ Errors made:
 ## Next session
 - Refactor process_sales into smaller validation and summarization functions
 - Add basic automated tests
+
+## July 29, 2026 — Session 2
+
+Completed:
+- Created a Windows virtual environment for the repository
+- Installed pytest
+- Split sales processing into validation, summarization, and controller functions
+- Added rejection reasons to invalid records
+- Added tests for completed, cancelled, and duplicate sales
+
+Current test status:
+- Replace this line with the actual pytest result
+
+Still to complete:
+- Test missing sale_id key handling
+- Test that process_sales uses only the supplied records
+- Review and clean type hints and formatting
+
+Next starting point:
+- Open tests/test_sales_baseline.py
+- Add test_missing_sale_id_key_is_rejected_without_error
