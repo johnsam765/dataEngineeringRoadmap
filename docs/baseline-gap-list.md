@@ -36,9 +36,10 @@ Errors made:
 - Initially counted cancelled records in the completed summary
 - Initially used a list instead of a set for duplicate detection
 
-## Next session
-- Refactor process_sales into smaller validation and summarization functions
-- Add basic automated tests
+## Baseline follow-up
+Completed:
+- Refactored process_sales into validation, summarization, and controller functions
+- Added initial automated tests
 
 ## July 29, 2026 — Session 2
 
@@ -50,7 +51,7 @@ Completed:
 - Added tests for completed, cancelled, and duplicate sales
 
 Current test status:
-- Replace this line with the actual pytest result
+- 3 tests passed
 
 Still to complete:
 - Test missing sale_id key handling
