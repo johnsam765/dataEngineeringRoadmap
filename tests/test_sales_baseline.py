@@ -62,3 +62,42 @@ def test_duplicate_sale_id_is_rejected():
     assert result["rejected_records"][0]["reason"] == "duplicate_sale_id"
     assert result["regional_summary"]["East"]['completed_order_count'] == 1
     assert result["regional_summary"]["East"]['completed_sales_amount'] == 100.0
+
+def test_missing_sale_id_key_is_rejected_without_error():
+    records = [
+        {
+            "region": "North",
+            "amount": 300.0,
+            "status": "Completed",
+        }
+    ]
+    
+    result=process_sales(records)
+    assert len(result["accepted_records"]) == 0
+    assert len(result["rejected_records"]) == 1
+    assert result["rejected_records"][0]["record"] == records[0]
+    assert result["rejected_records"][0]["reason"] == "missing_sale_id"
+    assert result["regional_summary"] == {}
+
+def test_process_sales_uses_supplied_records_only():
+    records = [
+        {
+            "sale_id": 9999,
+            "region": "Central",
+            "amount": 325.0,
+            "status": "Completed",
+        }
+    ]
+
+    result = process_sales(records)
+
+    assert result == {
+        "accepted_records": records,
+        "rejected_records": [],
+        "regional_summary": {
+            "Central": {
+                "completed_order_count": 1,
+                "completed_sales_amount": 325.0,
+            }
+        },
+    }

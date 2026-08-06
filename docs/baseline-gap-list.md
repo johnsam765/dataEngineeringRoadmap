@@ -61,3 +61,14 @@ Still to complete:
 Next starting point:
 - Open tests/test_sales_baseline.py
 - Add test_missing_sale_id_key_is_rejected_without_error
+
+## August 6th, 2026 — Session 3
+Current test status:
+- 5 tests passed
+
+Completed:
+- Tested valid completed sales
+- Tested cancelled sales
+- Tested duplicate rejection
+- Tested missing-key handling
+- Verified process_sales uses supplied records rather than global data

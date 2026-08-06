@@ -83,9 +83,9 @@ def process_sales(records: list[dict]) -> dict:
     regional_summary = {}
     seen_sale_ids = set()
     for sale in records:
-        is_valid,rejection_result=validate_sale(sale,seen_sale_ids)
+        is_valid,rejection_reason=validate_sale(sale,seen_sale_ids)
         if not is_valid:
-            rejected_records.append({"record":sale,"reason":rejection_result})
+            rejected_records.append({"record":sale,"reason":rejection_reason})
             continue
         seen_sale_ids.add(sale.get("sale_id"))
         accepted_records.append(sale)
