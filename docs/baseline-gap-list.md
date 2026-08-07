@@ -62,7 +62,7 @@ Next starting point:
 - Open tests/test_sales_baseline.py
 - Add test_missing_sale_id_key_is_rejected_without_error
 
-## August 6th, 2026 — Session 3
+## August 5th, 2026 — Session 3
 Current test status:
 - 5 tests passed
 
@@ -72,3 +72,25 @@ Completed:
 - Tested duplicate rejection
 - Tested missing-key handling
 - Verified process_sales uses supplied records rather than global data
+
+## August 6, 2026
+
+Completed:
+- Closed-book rebuild of sales validation/processing logic
+- SQL Exercises 4–7
+- Practised LEFT JOIN filter placement
+- Practised customer/region grain
+- Practised HAVING with multiple conditions
+- Practised ROW_NUMBER deduplication before aggregation
+
+SQL progress:
+- 7 of 15 exercises completed
+
+Key mistakes/learning:
+- RIGHT-table filters in WHERE can remove unmatched LEFT JOIN rows
+- COUNT(COALESCE(column, 0)) is wrong for counting actual matches
+- GROUP BY should follow the intended output grain
+- Latest-record ROW_NUMBER requires ORDER BY updated_at DESC
+
+Next starting point:
+- SQL Exercise 8: deduplicate sales first, then join to customers while preserving one row per customer
