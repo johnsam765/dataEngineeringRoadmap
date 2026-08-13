@@ -1,3 +1,6 @@
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 sales = [
     {
         "sale_id": 1001,
@@ -49,6 +52,14 @@ sales = [
     },
 ]
 
+def run_batch(records):
+    if records is None:
+        raise ValueError("records cannot be None")
+    logger.info("Batch started")
+    result= process_sales(records)
+    logger.info("Batch completed:accepted=%d rejected=%d",len(result["accepted_records"]),len(result["rejected_records"]))
+    return result
+
 def validate_sale(sale, seen_sale_ids) -> tuple[bool,str|None]:
     if sale.get("sale_id") in (None,""):
         return (False, "missing_sale_id")
@@ -85,6 +96,7 @@ def process_sales(records: list[dict]) -> dict:
     for sale in records:
         is_valid,rejection_reason=validate_sale(sale,seen_sale_ids)
         if not is_valid:
+            logger.warning("Sale rejected: sale_id=%s reason=%s",sale.get("sale_id"),rejection_reason)
             rejected_records.append({"record":sale,"reason":rejection_reason})
             continue
         seen_sale_ids.add(sale.get("sale_id"))
@@ -97,4 +109,9 @@ def process_sales(records: list[dict]) -> dict:
      }
      
 if __name__ == "__main__":
-    print(process_sales(sales))
+    try:
+        result = run_batch(sales)
+        print(result)
+    except ValueError as exc:
+        logger.error("Batch failed: %s",exc)
+        raise

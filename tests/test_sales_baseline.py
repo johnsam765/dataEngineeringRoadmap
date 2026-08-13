@@ -1,4 +1,6 @@
-from src.transformations.sales_baseline import process_sales
+import pytest
+import logging
+from src.transformations.sales_baseline import process_sales,run_batch
 
 def test_valid_completed_sales_are_accepted_and_summarized():
     records = [
@@ -101,3 +103,30 @@ def test_process_sales_uses_supplied_records_only():
             }
         },
     }
+
+def test_run_batch_exception_handling():
+    records=None
+    with pytest.raises(ValueError,match="records cannot be None"):
+        run_batch(records)
+
+def test_logger(caplog):
+    record=[{
+    "sale_id": None,
+    "region": "East",
+    "amount": 100,
+    "status": "Completed",
+    }]
+    result = run_batch(record)
+    assert len(result["rejected_records"]) == 1
+    assert "missing_sale_id" in caplog.text
+
+def test_run_batch_logs_summary(caplog):
+    caplog.set_level(logging.INFO)
+    record=[{
+    "sale_id": 1001,
+    "region": "East",
+    "amount": 100,
+    "status": "Completed",
+    }]
+    run_batch(record)
+    assert "Batch completed:accepted=1 rejected=0" in caplog.text
