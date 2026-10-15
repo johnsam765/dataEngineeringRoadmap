@@ -1,4 +1,4 @@
-from src.ingestion.sales_csv import read_sales_csv,normalize_sale
+from src.ingestion.sales_csv import read_sales_csv,normalize_sale,normalize_records
 import pytest
 
 def test_read_sales_csv(tmp_path):
@@ -53,5 +53,18 @@ def test_normalize_invalid_amount():
     }
     with pytest.raises(ValueError):
         normalize_sale(record)
+
+def test_normalize_def():
+    records = [
+    {"sale_id": "1001", "amount": "120.00", "region": "East", "status": "Completed"},
+    {"sale_id": "1002", "amount": "abc", "region": "West", "status": "Completed"},
+    {"sale_id": "1003", "amount": "300.00", "region": "North", "status": "Completed"}
+]
+    normalized, rejected = normalize_records(records)
+    assert len(normalized) == 2
+    assert len(rejected) == 1
+    assert normalized[1]["sale_id"] == 1003
+    assert isinstance(rejected[0]["record"]["amount"], str)
+    assert rejected[0]["reason"] == "invalid_numeric_value"
 
 

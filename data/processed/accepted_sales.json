@@ -6,21 +6,9 @@
     "status": "Completed"
   },
   {
-    "sale_id": 1002,
-    "region": "East",
-    "amount": 80.0,
-    "status": "Completed"
-  },
-  {
     "sale_id": 1003,
-    "region": "East",
-    "amount": 50.0,
-    "status": "Cancelled"
-  },
-  {
-    "sale_id": 1004,
-    "region": "West",
-    "amount": 200.0,
+    "region": "North",
+    "amount": 300.0,
     "status": "Completed"
   }
 ]

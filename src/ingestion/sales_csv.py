@@ -15,10 +15,23 @@ def normalize_sale(record:dict) -> dict:
     record["amount"]=None if record["amount"]=="" else float(record["amount"])
     return record
 
+def normalize_records(records: list[dict]) -> tuple[list[dict], list[dict]]:
+    normalized_records=[]
+    normalization_rejections=[]
+    for record in records:
+        try:
+            normalized_record=normalize_sale(record.copy())
+            normalized_records.append(normalized_record)
+        except ValueError:
+            normalization_rejections.append({"record":record,"reason":"invalid_numeric_value"})
+    return normalized_records, normalization_rejections
+
+
 if __name__=="__main__":
     records=read_sales_csv(SALES_ROOT)
-    normalized_records=[normalize_sale(record) for record in records]
+    normalized_records, normalization_rejections = normalize_records(records)
     result = process_sales(normalized_records)
+    result["rejected_records"].extend(normalization_rejections)
     write_json(result["accepted_records"],ROOT/"data"/"processed"/"accepted_sales.json")
     write_json(result["rejected_records"],ROOT/"data"/"rejected"/"rejected_sales.json")
     print(result)

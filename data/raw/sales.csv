@@ -1,9 +1,4 @@
 sale_id,region,amount,status
 1001,East,120.00,Completed
-1002,East,80.00,Completed
-1003,East,50.00,Cancelled
-1004,West,200.00,Completed
-1004,West,200.00,Completed
-1005,,150.00,Completed
-1006,West,,Completed
-,North,300.00,Completed
+1002,West,abc,Completed
+1003,North,300.00,Completed
