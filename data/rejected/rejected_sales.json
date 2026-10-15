@@ -1,0 +1,38 @@
+[
+  {
+    "record": {
+      "sale_id": 1004,
+      "region": "West",
+      "amount": 200.0,
+      "status": "Completed"
+    },
+    "reason": "duplicate_sale_id"
+  },
+  {
+    "record": {
+      "sale_id": 1005,
+      "region": "",
+      "amount": 150.0,
+      "status": "Completed"
+    },
+    "reason": "missing_region"
+  },
+  {
+    "record": {
+      "sale_id": 1006,
+      "region": "West",
+      "amount": null,
+      "status": "Completed"
+    },
+    "reason": "missing_completed_amount"
+  },
+  {
+    "record": {
+      "sale_id": null,
+      "region": "North",
+      "amount": 300.0,
+      "status": "Completed"
+    },
+    "reason": "missing_sale_id"
+  }
+]
