@@ -176,3 +176,118 @@ Next starting point:
 - Rebuild the important grain/fan-out concepts without hints
 - Review exceptions and logging briefly
 - Continue to the next planned data engineering topic rather than adding more exercises to the completed block
+
+## October 15, 2026 — Python Ingestion, Serialization, and Data Quality
+
+**Completed:**
+- Implemented CSV ingestion using `csv.DictReader` and `pathlib`
+- Implemented numeric normalization (`str` → `int` / `float`, empty values → `None`)
+- Created reusable `normalize_records()` function
+- Added record-level `try/except` handling for invalid numeric values
+- Preserved original source records using `.copy()`
+- Implemented rejection handling without stopping valid records from processing
+- Implemented reusable JSON output writer using `json.dump()`
+- Persisted accepted and rejected records into separate JSON files
+- Added ingestion, normalization, JSON-writing, and malformed-record recovery tests
+
+**Current test status:**
+- **14 tests passed**
+
+**Key Python learning:**
+- `tmp_path` creates isolated temporary directories for pytest
+- `pytest.raises()` verifies expected exceptions
+- `isinstance()` checks data types; `is None` checks null values
+- Dictionaries are mutable; `.copy()` prevents modification of the original flat record
+- `try/except` enables record-level recovery when appropriate
+- Rejected records should preserve the original input and rejection reason
+- `json.dump()` serializes Python data to a file
+- `json.load()` / `json.loads()` deserialize JSON data
+- A reusable function should be separate from the `__main__` execution block
+
+**Areas to improve:**
+- Distinguish `INVALID_AMOUNT` from `INVALID_SALE_ID`
+- Handle missing keys and malformed CSV structures
+- Add automated end-to-end pipeline tests
+- Integrate `run_batch()` consistently into the execution flow
+- Verify reconciliation across accepted and rejected records
+- Improve logging for normalization failures
+
+**Next starting point:**
+- Continue advanced SQL exercises: CTEs, join grain, fan-out, aggregation, and reconciliation
+- Later integrate Python ingestion with relational database loading
+
+## October 20, 2026 — Advanced SQL and Production Python Error Handling
+
+### SQL — Completed
+
+- Completed three additional production-style SQL exercises.
+- Implemented payment reconciliation using CTEs and pre-aggregation.
+- Practised `LEFT JOIN`, `COALESCE`, `COUNT`, `SUM`, and outstanding-balance calculations.
+- Implemented latest-record deduplication using `ROW_NUMBER()`.
+- Handled duplicate timestamps using a source-version tie-breaker.
+- Implemented regional financial reconciliation with Completed sales only.
+- Practised preserving the intended grain across payment, sale, and region levels.
+
+### SQL — Key Learning
+
+- Determine the target output grain before writing joins or aggregations.
+- Pre-aggregate child tables when joining detailed rows would incorrectly multiply measures.
+- `ORDER BY updated_at DESC` selects the newest timestamp, not the oldest.
+- Timestamp ties require a reliable source-defined ordering field.
+- The highest amount does not necessarily represent the latest record.
+- Use `WHERE status = 'Completed'`, not `status <> 'Cancelled'`, when the requirement is Completed sales only.
+- Use standard SQL equality (`=`) and single quotes for string literals.
+- Ensure CTEs expose the columns required by downstream joins.
+
+### Python — Completed
+
+- Improved `normalize_sale()` with separate exception handling for `sale_id` and `amount`.
+- Introduced field-specific rejection codes: `INVALID_SALE_ID` and `INVALID_AMOUNT`.
+- Used `raise ValueError(...) from exc` to preserve the original exception.
+- Updated `normalize_records()` to capture the error message using `str(exc)`.
+- Preserved original raw records using `record.copy()`.
+- Verified that malformed records are rejected without preventing subsequent valid records from processing.
+- Added an automated test for invalid sale IDs.
+- Updated the existing normalization recovery test to expect `INVALID_AMOUNT`.
+
+### Python — Key Learning
+
+- Exception handling should distinguish conversion errors by field.
+- Normalizing one record and managing a batch of records are separate responsibilities.
+- `normalize_sale()` converts data or raises an error.
+- `normalize_records()` catches record-level failures and maintains the rejection collection.
+- Raising an exception stops the current function's normal execution.
+- One rejected record should not accidentally generate multiple rejection entries.
+- Preserve original source values for auditing and reprocessing.
+
+### Test Status
+
+- Last confirmed complete suite: 14 tests passed.
+- Added one new invalid-sale-ID test.
+- Expected total: 15 tests, pending confirmation by running pytest.
+
+### Remaining Python Gaps
+
+- Handle missing CSV columns without unexpected `KeyError` failures.
+- Improve schema validation and malformed-row handling.
+- Use `Decimal` for financial amounts rather than `float`.
+- Handle non-finite numeric values and other edge cases.
+- Integrate `run_batch()` consistently into the pipeline entry point.
+- Add complete batch reconciliation and end-to-end testing.
+- Improve structured logging and audit information.
+
+### Remaining SQL Gaps
+
+- Save completed advanced SQL exercises in the repository.
+- Practise harder CTE, subquery, and date/time scenarios.
+- Implement incremental loading with watermarks and upserts.
+- Practise transactions, audit queries, and reconciliation.
+- Learn query execution plans, indexing, and SQL performance troubleshooting.
+
+### Next Starting Point
+
+**Python:** Verify all tests, then implement missing-field and schema-validation handling.
+
+**SQL:** Continue advanced business scenarios involving incremental loads, date logic, and complex joins.
+
+**Overall objective:** Develop independent, production-oriented Python and SQL proficiency for data-engineering roles and technical interviews.

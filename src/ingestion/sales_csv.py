@@ -10,9 +10,23 @@ def read_sales_csv(file_path:Path) -> list[dict]:
     with file_path.open("r",encoding="utf-8",newline="") as file_content:
         return list(csv.DictReader(file_content))
 
-def normalize_sale(record:dict) -> dict:
-    record["sale_id"]=None if record["sale_id"]=="" else int(record["sale_id"])
-    record["amount"]=None if record["amount"]=="" else float(record["amount"])
+def normalize_sale(record: dict) -> dict:
+    try:
+        record["sale_id"] = (
+            None if record["sale_id"] == ""
+            else int(record["sale_id"])
+        )
+    except ValueError as exc:
+        raise ValueError("INVALID_SALE_ID") from exc
+
+    try:
+        record["amount"] = (
+            None if record["amount"] == ""
+            else float(record["amount"])
+        )
+    except ValueError as exc:
+        raise ValueError("INVALID_AMOUNT") from exc
+
     return record
 
 def normalize_records(records: list[dict]) -> tuple[list[dict], list[dict]]:
@@ -22,8 +36,11 @@ def normalize_records(records: list[dict]) -> tuple[list[dict], list[dict]]:
         try:
             normalized_record=normalize_sale(record.copy())
             normalized_records.append(normalized_record)
-        except ValueError:
-            normalization_rejections.append({"record":record,"reason":"invalid_numeric_value"})
+        except ValueError as exc:
+            normalization_rejections.append({
+                "record": record,
+                "reason": str(exc)
+            })
     return normalized_records, normalization_rejections
 
 

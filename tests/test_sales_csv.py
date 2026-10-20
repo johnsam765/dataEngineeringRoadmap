@@ -65,6 +65,21 @@ def test_normalize_def():
     assert len(rejected) == 1
     assert normalized[1]["sale_id"] == 1003
     assert isinstance(rejected[0]["record"]["amount"], str)
-    assert rejected[0]["reason"] == "invalid_numeric_value"
+    assert rejected[0]["reason"] == "INVALID_AMOUNT"
+
+def test_normalize_exception():
+    records = [
+        {
+            "sale_id": "abc",
+            "amount": "120.00",
+            "region": "East",
+            "status": "Completed"
+        }
+    ]
+    normalized, rejected = normalize_records(records)
+    assert len(normalized) == 0
+    assert len(rejected) == 1
+    assert rejected[0]["reason"] == "INVALID_SALE_ID"
+     
 
 
