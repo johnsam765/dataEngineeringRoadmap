@@ -11,18 +11,20 @@ def read_sales_csv(file_path:Path) -> list[dict]:
         return list(csv.DictReader(file_content))
 
 def normalize_sale(record: dict) -> dict:
+    raw_sale_id = record.get("sale_id")
+    raw_sale_amount = record.get("amount")
     try:
         record["sale_id"] = (
-            None if record["sale_id"] == ""
-            else int(record["sale_id"])
+            None if raw_sale_id in (None, "")
+            else int(raw_sale_id)
         )
     except ValueError as exc:
         raise ValueError("INVALID_SALE_ID") from exc
 
     try:
         record["amount"] = (
-            None if record["amount"] == ""
-            else float(record["amount"])
+            None if raw_sale_amount in (None, "")
+            else float(raw_sale_amount)
         )
     except ValueError as exc:
         raise ValueError("INVALID_AMOUNT") from exc

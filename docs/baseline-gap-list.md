@@ -291,3 +291,57 @@ Next starting point:
 **SQL:** Continue advanced business scenarios involving incremental loads, date logic, and complex joins.
 
 **Overall objective:** Develop independent, production-oriented Python and SQL proficiency for data-engineering roles and technical interviews.
+
+## October 21, 2026 — Python Missing-Field Handling and SQL Incremental Date Filtering
+
+### Python — Completed
+
+- Reviewed the difference between dictionary indexing (`record["key"]`) and safe retrieval (`record.get("key")`).
+- Identified why accessing a missing dictionary key raises `KeyError`.
+- Updated `normalize_sale()` to handle missing `sale_id` and `amount` fields safely.
+- Standardized missing and empty numeric fields to `None`.
+- Preserved `INVALID_SALE_ID` and `INVALID_AMOUNT` exceptions for malformed numeric strings.
+- Added two normalization tests for missing numeric fields.
+- Reviewed the difference between normalization and business validation.
+
+### Python — Key Learning
+
+- `record["key"]` raises `KeyError` when the key is missing.
+- `record.get("key")` returns `None` when the key is missing.
+- Converting a local variable does not automatically update its source dictionary.
+- Normalization converts data into standardized types.
+- Business validation determines whether a normalized record satisfies business rules.
+- A missing `sale_id` can be normalized to `None` before being rejected by `process_sales()`.
+- A missing amount is rejected by business validation when `status = "Completed"`.
+- Cancelled records with missing amounts may still be accepted under the current business rules.
+
+### SQL — Completed
+
+- Practised timestamp filtering for daily incremental data extraction.
+- Identified sale IDs within a specified daily loading window.
+- Compared `BETWEEN` with inclusive-start and exclusive-end filtering.
+- Corrected an end-of-day boundary that could omit fractional-second timestamps.
+- Implemented an incremental date-range SQL query using `>=` and `<`.
+- Practised ascending timestamp ordering.
+
+### SQL — Key Learning
+
+- Incremental loading can process only records that fall within a defined time window.
+- Half-open intervals include the starting boundary and exclude the ending boundary.
+- `BETWEEN` includes both boundaries and can cause issues with timestamp precision.
+- Prefer `updated_at >= start_watermark AND updated_at < end_watermark`.
+- Production watermarks should be parameterized rather than hardcoded.
+- Timestamp-based incremental filtering alone does not guarantee exactly-once processing.
+
+### Testing Checkpoint
+
+- Two missing-field normalization tests added.
+- Full pytest suite must be rerun to confirm the updated passing-test count.
+
+### Next Session
+
+**Python:** Improve validation for malformed CSV structures, unexpected data types, and complete pipeline integration.
+
+**SQL:** Implement persisted incremental-load watermarks, late-arriving records, and idempotent loading.
+
+**Long-term objective:** Independently build, test, troubleshoot, and explain reliable Python and SQL data-engineering pipelines.

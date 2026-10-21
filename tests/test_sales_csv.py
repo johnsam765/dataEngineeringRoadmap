@@ -80,6 +80,30 @@ def test_normalize_exception():
     assert len(normalized) == 0
     assert len(rejected) == 1
     assert rejected[0]["reason"] == "INVALID_SALE_ID"
-     
+
+def test_normalize_missing_sale_id():
+    records = [
+        {
+            "region": "East",
+            "status": "Completed"
+        }
+    ]
+    normalized, rejected = normalize_records(records)
+    assert len(normalized) == 1
+    assert len(rejected) == 0
+    assert normalized[0]["sale_id"] is None
+
+def test_normalize_missing_amount():
+    records = [
+        {
+            "sale_id": "1001",
+            "region": "East",
+            "status": "Completed"
+        }
+    ]
+    normalized, rejected = normalize_records(records)
+    assert len(normalized) == 1
+    assert len(rejected) == 0
+    assert normalized[0]["amount"] is None
 
 

@@ -123,3 +123,35 @@ LEFT JOIN payment_summary ps
 WHERE s.status = 'Completed'
 GROUP BY s.region
 ORDER BY s.region;
+
+-- =====================================================
+-- EXERCISE 4: INCREMENTAL LOADING - TIMESTAMP FILTERING
+-- Date: October 21, 2026
+-- =====================================================
+
+-- Business requirement:
+-- Retrieve sales updated during October 20, 2026.
+--
+-- Start watermark: 2026-10-20 00:00:00 (inclusive)
+-- End watermark:   2026-10-21 00:00:00 (exclusive)
+--
+-- Expected sale IDs from our practice dataset:
+-- 1002, 1003
+--
+-- Key learning:
+-- Use a half-open timestamp interval.
+-- Avoid BETWEEN with an end-of-day timestamp because
+-- fractional seconds could cause missing records.
+--
+-- Production note:
+-- Watermark values should eventually be parameters,
+-- not hardcoded dates.
+
+SELECT
+    sale_id,
+    amount,
+    updated_at
+FROM sales_history
+WHERE updated_at >= '2026-10-20 00:00:00'
+  AND updated_at < '2026-10-21 00:00:00'
+ORDER BY updated_at ASC;
