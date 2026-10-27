@@ -7,8 +7,21 @@ ROOT=Path(__file__).resolve().parent.parent.parent
 SALES_ROOT=ROOT/"data"/"raw"/"sales.csv"
 
 def read_sales_csv(file_path:Path) -> list[dict]:
+    required_columns={"sale_id","region","amount","status"}
     with file_path.open("r",encoding="utf-8",newline="") as file_content:
-        return list(csv.DictReader(file_content))
+        reader=csv.DictReader(file_content)
+        actual_columns=set(reader.fieldnames or [])
+        missing_columns=required_columns-actual_columns
+        if missing_columns:
+            raise ValueError(f"MISSING_REQUIRED_COLUMNS: {', '.join(sorted(missing_columns))}")
+        records=[]
+        for i in reader:
+            if None in i:
+                raise ValueError("EXTRA_CSV_VALUES")
+            if any(j is None for j in i.values()):
+                raise ValueError("MISSING_CSV_VALUES")
+            records.append(i)
+        return records
 
 def normalize_sale(record: dict) -> dict:
     raw_sale_id = record.get("sale_id")
@@ -51,6 +64,18 @@ if __name__=="__main__":
     normalized_records, normalization_rejections = normalize_records(records)
     result = process_sales(normalized_records)
     result["rejected_records"].extend(normalization_rejections)
+    source_count = len(records)
+    accepted_count = len(result["accepted_records"])
+    rejected_count = len(result["rejected_records"])
+    if source_count != accepted_count + rejected_count:
+        raise RuntimeError(
+            f"RECONCILIATION_FAILED: source={source_count}, "
+            f"accepted={accepted_count}, rejected={rejected_count}"
+        )
+    print(
+        f"RECONCILIATION_PASSED: source={source_count}, "
+        f"accepted={accepted_count}, rejected={rejected_count}"
+    )
     write_json(result["accepted_records"],ROOT/"data"/"processed"/"accepted_sales.json")
     write_json(result["rejected_records"],ROOT/"data"/"rejected"/"rejected_sales.json")
     print(result)

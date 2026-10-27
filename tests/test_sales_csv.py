@@ -106,4 +106,56 @@ def test_normalize_missing_amount():
     assert len(rejected) == 0
     assert normalized[0]["amount"] is None
 
+def test_read_sales_csv_missing_required_column(tmp_path):
+    csv_file = tmp_path / "sales.csv"
+
+    csv_file.write_text(
+        """saleid,region,amount,status
+1001,East,120.00,Completed
+""",
+        encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="MISSING_REQUIRED_COLUMNS: sale_id"):
+        read_sales_csv(csv_file)
+
+def test_read_sales_csv_missing_required_columns(tmp_path):
+    csv_file = tmp_path / "sales.csv"
+
+    csv_file.write_text(
+        """saleid,region,price,status
+1001,East,120.00,Completed
+""",
+        encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="MISSING_REQUIRED_COLUMNS: amount, sale_id"):
+        read_sales_csv(csv_file)
+
+def test_read_sales_csv_missing_required_cells(tmp_path):
+    csv_file = tmp_path / "sales.csv"
+
+    csv_file.write_text(
+        """sale_id,region,amount,status
+1001,East,120.00
+""",
+        encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="MISSING_CSV_VALUES"):
+        read_sales_csv(csv_file)
+
+def test_read_sales_csv_extra_required_cells(tmp_path):
+    csv_file = tmp_path / "sales.csv"
+
+    csv_file.write_text(
+        """sale_id,region,amount,status
+1001,East,120.00,"Completed",123
+""",
+        encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="EXTRA_CSV_VALUES"):
+        read_sales_csv(csv_file)
+
 

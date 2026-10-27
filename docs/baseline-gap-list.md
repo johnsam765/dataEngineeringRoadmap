@@ -345,3 +345,32 @@ Next starting point:
 **SQL:** Implement persisted incremental-load watermarks, late-arriving records, and idempotent loading.
 
 **Long-term objective:** Independently build, test, troubleshoot, and explain reliable Python and SQL data-engineering pipelines.
+
+## October 26, 2026 — Python and SQL Session
+
+### Python
+- Implemented CSV required-header validation.
+- Detected extra and missing CSV cells.
+- Distinguished empty cells from missing cells.
+- Added pytest tests for malformed CSV structures.
+- Implemented source-to-output count reconciliation.
+- Reviewed normalization vs business validation.
+
+### SQL
+- Practised LEFT JOIN anti-join and NOT EXISTS.
+- Reviewed correlated subquery execution.
+- Identified new and updated source records.
+- Used ROW_NUMBER and CTEs for deduplication.
+- Studied MERGE and idempotency.
+- Reviewed transactions, COMMIT and ROLLBACK.
+- Understood timestamp watermarks and late arrivals.
+- Learned authoritative source-version ordering.
+
+### Verification
+- Previous test run: 20 passed, 1 failed.
+- Missing-cell test corrected; final run pending.
+
+### Next Session
+- Python: Automated reconciliation and integration tests.
+- SQL: Ingestion timestamps, late-arriving data,
+  persisted watermarks and executable MERGE scenarios.
